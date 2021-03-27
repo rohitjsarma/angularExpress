@@ -1,0 +1,67 @@
+<script type="text/javascript" src="angular.min.js"></script>
+<script type="text/javascript">
+app=angular.module("myapp",[])
+app.controller("c1",function($http,$scope){
+$scope.funget=function(){
+$http.get("get_rec").then(function(dt){
+  $scope.newOne=dt.data
+})
+}
+//insert record
+$scope.funins=function(){
+ obj={_id:$scope.t1,username:$scope.t2,city:$scope.t3}
+ $http({
+ 	method:"post",url:"ins_rec",data:obj
+ }).then(function(dt){
+ 	alert(dt.data)
+ 	$scope.t1=""
+ 	$scope.t2=""
+ 	$scope.t3=""
+ 	$scope.funget()
+ })
+}
+////////Delete record
+$scope.fundelOne=function(ct){
+	obj={city:ct}
+	$http({
+		url:"del_rec",method:"post",
+		data:obj
+	}).then(function(dt){
+		alert(dt.data)
+		$scope.funget()
+	})
+}
+
+////////////////Delete All/////////////
+$scope.fundelAll=function(){
+$http.delete("del_allRec").then(function(dtt){
+	alert(dtt.data)
+	$scope.funget()
+})
+}
+})
+</script>
+<body ng-app="myapp" ng-controller="c1">
+<input type="button" name="" value="Get Data" ng-click="funget()">
+<table border="1">
+	
+		<th>ID</th>
+		<th>Name</th>
+		<th>City</th>
+	<tr ng-repeat="x in newOne">	
+	<td>{{x._id}}</td>
+	<td>{{x.username}}</td>
+	<td>{{x.city}}</td>	
+	<td><input type="button" value="Delete" ng-click="fundelOne(x.city)"></td>
+    </tr>
+
+</table><br>
+<h1>Insert</h1>
+Id:<input type="text" ng-model="t1"><br>
+Name:<input type="text" ng-model="t2"><br>
+City:<input type="text" ng-model="t3"><br>
+<input type="button" name="" value="Insert" ng-click="funins()">
+<br><br>
+<input type="button" value="Delete All"
+ng-click="fundelAll()">
+</body>
